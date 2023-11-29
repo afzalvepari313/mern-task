@@ -61,14 +61,6 @@ userSchema.pre('save', async function (next) {
     next();
   });
   
-//   userSchema.methods.decryptPhoneNumber = async function () {
-//     if (this.mobile) {
-//       const bytes = CryptoJS.AES.decrypt(this.mobile, SecretKey);
-//       const decryptedMobileNumber = bytes.toString(CryptoJS.enc.Utf8);
-//       return decryptedMobileNumber;
-//     }
-//     return null;
-//   };
 
 userSchema.methods.decryptEmail = async function () {
     return decryptFieldwithKey('email', this.email);
