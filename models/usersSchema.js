@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-
-const usersSchema = new mongoose.Schema({
+const encryptField = require('../utils/aesEncryptin').encryptField;
+const decryptFieldwithKey = require('../utils/aesEncryptin').decryptFieldwithKey;
+const userSchema = new mongoose.Schema({
     fname: {
         type: String,
         required: true,
@@ -49,7 +50,31 @@ const usersSchema = new mongoose.Schema({
     dateUpdated:Date
 });
 
+userSchema.pre('save', async function (next) {
+    this.fname = await encryptField(this.fname);
+    this.lname = await encryptField(this.lname);
+    this.mobile = await encryptField(this.mobile);
+    this.email = await encryptField(this.email);
+    this.gender = await encryptField(this.gender);
+    this.status = await encryptField(this.status);
+    this.location = await encryptField(this.location);
+    next();
+  });
+  
+//   userSchema.methods.decryptPhoneNumber = async function () {
+//     if (this.mobile) {
+//       const bytes = CryptoJS.AES.decrypt(this.mobile, SecretKey);
+//       const decryptedMobileNumber = bytes.toString(CryptoJS.enc.Utf8);
+//       return decryptedMobileNumber;
+//     }
+//     return null;
+//   };
+
+userSchema.methods.decryptEmail = async function () {
+    return decryptFieldwithKey('email', this.email);
+
+  };
 // model
-const users = new mongoose.model("users",usersSchema);
+const users = new mongoose.model("users",userSchema);
 
 module.exports = users;

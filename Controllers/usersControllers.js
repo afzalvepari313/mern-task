@@ -2,7 +2,10 @@ const users = require("../models/usersSchema");
 const moment = require("moment");
 const csv = require("fast-csv");
 const fs = require("fs");
+const CryptoJS = require('crypto-js');
 const BASE_URL = process.env.BASE_URL
+const decryptFieldwithKey = require('../utils/aesEncryptin').decryptFieldwithKey;
+const SECRET_KEY = process.env.PUBLIC_KEY;
 
 // register user
 exports.userpost = async (req, res) => {
@@ -21,6 +24,11 @@ exports.userpost = async (req, res) => {
         } else {
 
             const datecreated = moment(new Date()).format("YYYY-MM-DD hh:mm:ss");
+
+
+            // Encrypt data
+            // const encryptedEmail = CryptoJS.AES.encrypt(email, SECRET_KEY).toString();
+            // const encryptedMobile = CryptoJS.AES.encrypt(mobile, SECRET_KEY).toString();
 
             const userData = new users({
                 fname, lname, email, mobile, gender, location, status, profile: file, datecreated
@@ -69,11 +77,11 @@ exports.userget = async (req, res) => {
             .limit(ITEM_PER_PAGE)
             .skip(skip);
 
-        const pageCount = Math.ceil(count/ITEM_PER_PAGE);  // 8 /4 = 2
+        const pageCount = Math.ceil(count / ITEM_PER_PAGE);  // 8 /4 = 2
 
         res.status(200).json({
-            Pagination:{
-                count,pageCount
+            Pagination: {
+                count, pageCount
             },
             usersdata
         })
@@ -89,6 +97,10 @@ exports.singleuserget = async (req, res) => {
 
     try {
         const userdata = await users.findOne({ _id: id });
+
+        const decryptedEmail = await decryptFieldwithKey('email', userdata.email);
+        userdata.email = decryptedEmail;
+
         res.status(200).json(userdata)
     } catch (error) {
         res.status(401).json(error)
