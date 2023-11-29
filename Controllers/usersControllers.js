@@ -103,10 +103,6 @@ exports.singleuserget = async (req, res) => {
 
     try {
         const userdata = await users.findOne({ _id: id });
-
-        const decryptedEmail = await decryptFieldwithKey('email', userdata.email);
-        userdata.email = decryptedEmail;
-
         res.status(200).json(userdata)
     } catch (error) {
         res.status(401).json(error)
