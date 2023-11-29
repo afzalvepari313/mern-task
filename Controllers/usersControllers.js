@@ -42,6 +42,12 @@ exports.userpost = async (req, res) => {
     }
 };
 
+//all user get
+exports.allUsers= async (req, res) => {
+    const allUser= await users.find();
+    res.status(200).json(allUser);
+}
+
 
 // usersget
 exports.userget = async (req, res) => {
