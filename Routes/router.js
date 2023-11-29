@@ -7,7 +7,7 @@ const upload = require("../multerconfig/storageConfig")
 // routes
 router.post("/user/register",upload.single("user_profile"),controllers.userpost);
 router.get("/user/details",controllers.userget);
-router.post("/user/allUserGet",controllers.allUsers);
+router.post("/user/GetAllUsers",controllers.allUsers);
 router.post("/user/:id",controllers.singleuserget);
 router.put("/user/edit/:id",upload.single("user_profile"),controllers.useredit);
 router.delete("/user/delete/:id",controllers.userdelete);
