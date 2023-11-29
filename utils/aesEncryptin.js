@@ -9,6 +9,7 @@ const encryptField = (fieldValue) => {
     return null;
   };
 
+  // Async decryption function
 const decryptFieldwithKey = (fieldName, encryptedFieldValue) => {
     if (encryptedFieldValue) {
         const decryptedField = CryptoJS.AES.decrypt(encryptedFieldValue, SecretKey);
